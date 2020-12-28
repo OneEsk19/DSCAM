@@ -1,0 +1,105 @@
+---
+title: "Splice Junctions"
+author: "Georgina Robertson"
+date: "28/12/2020"
+output: 
+  rmarkdown::html_document:
+    theme: united
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Finding novel splice junctions in RNA-seq data from <i> D. melanogaster DSCAM </i> gene.
+
+Required library
+```{r}
+library(data.table)
+```
+
+Create objects from all of the relevant files
+```{r}
+ # splice junction file from database
+fromDB <- read.table("SJ_files/sjdbList.fromGTF.out.tab")
+
+# splice junction files output from STAR aligner
+out1 <- setDT(read.table("SJ_files/3962_1_SJ.out.tab"))
+out2 <- setDT(read.table("SJ_files/3962_1a_SJ.out.tab"))
+out3 <- setDT(read.table("SJ_files/4024_1_SJ.out.tab"))
+out4 <- setDT(read.table("SJ_files/4049_1_SJ.out.tab"))
+```
+
+Visual inspection of our output files show we only have SJs from chromosome 2R, so subset only 2R SJs from ref file to speed up computation
+```{r}
+chr2Rdb <- setDT(fromDB[fromDB$V1=="2R",])
+```
+
+Setting the key in the reference (that's like a dictionary to you python people)
+```{r}
+setkey(chr2Rdb, V2, V3)
+```
+___________________________________________________
+#### Method 1. Each .out file individually
+
+Setting the key in our splice tables and selecting observations from our results that do not appear in the reference.
+```{r}
+setkey(out1, V2, V3)
+res1 <- out1[!chr2Rdb]
+
+setkey(out2, V2, V3)
+res2 <- out2[!chr2Rdb]
+
+setkey(out3, V2, V3)
+res3 <- out3[!chr2Rdb]
+
+setkey(out4, V2, V3)
+res4 <- out4[!chr2Rdb]
+```
+
+Look at results
+```{r}
+res1
+res2
+res3
+res4
+```
+OR:<br>
+
+#### Method 2.
+All in one (less code, neater)
+
+```{r}
+# merge into one table
+allout <- rbind(out1, out2, out3, out4)
+
+# perform above operations on one go
+setkey(chr2Rdb, V2, V3)
+setkey(allout, V2, V3)
+# get same results, but neater!
+allres <- allout[!chr2Rdb]
+allres
+```
+
+Output results to file
+```{r}
+write.csv(allres, file = "unique_SJs.csv")
+```
+
+Additional things that could be done:
+Add meaningful column names
+..... 
+
+
+
+
+
+
+
+
+
+
+
+
+
