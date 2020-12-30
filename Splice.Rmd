@@ -78,13 +78,14 @@ allout <- rbind(out1, out2, out3, out4)
 setkey(chr2Rdb, V2, V3)
 setkey(allout, V2, V3)
 # get same results, but neater!
-allres <- allout[!chr2Rdb]
-allres
+novelSJ <- allout[!chr2Rdb]
+knownSJ <- allout[chr2db]
 ```
 
 Output results to file
 ```{r}
-write.csv(allres, file = "unique_SJs.csv")
+write.csv(novelSJ, file = "unique_SJs.csv")
+write.csv(knownSJ, file = "known_SJs.csv")
 ```
 
 Additional things that could be done:
