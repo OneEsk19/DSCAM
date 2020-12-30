@@ -80,6 +80,8 @@ setkey(allout, V2, V3)
 # get same results, but neater!
 novelSJ <- allout[!chr2Rdb]
 knownSJ <- allout[chr2db]
+colnames(novelSJ) <- c("chromosome", "start", "end". "strand", "intron motif", "annotation", "uniquely mapping reads", "multi-mapping reads", "max spliced alignment")
+colnames(knownSJ) <- c("chromosome", "start", "end". "strand", "intron motif", "annotation", "uniquely mapping reads", "multi-mapping reads", "max spliced alignment")
 ```
 
 Output results to file
@@ -88,8 +90,7 @@ write.csv(novelSJ, file = "unique_SJs.csv")
 write.csv(knownSJ, file = "known_SJs.csv")
 ```
 
-Additional things that could be done:
-Add meaningful column names
+
 ..... 
 
 
