@@ -41,7 +41,8 @@ Setting the key in the reference (that's like a dictionary to you python people)
 setkey(chr2Rdb, V2, V3)
 ```
 ___________________________________________________
-#### Method 1. Each .out file individually
+#### Method 1. 
+Each .out file individually
 
 Setting the key in our splice tables and selecting observations from our results that do not appear in the reference.
 ```{r}
@@ -65,8 +66,7 @@ res2
 res3
 res4
 ```
-OR:<br>
-
+____________________________________________________________________________
 #### Method 2.
 All in one (less code, neater)
 
@@ -83,7 +83,7 @@ knownSJ <- allout[chr2db]
 colnames(novelSJ) <- c("chromosome", "start", "end". "strand", "intron motif", "annotation", "uniquely mapping reads", "multi-mapping reads", "max spliced alignment")
 colnames(knownSJ) <- c("chromosome", "start", "end". "strand", "intron motif", "annotation", "uniquely mapping reads", "multi-mapping reads", "max spliced alignment")
 ```
-
+__________________________________________________________________________
 Output results to file
 ```{r}
 write.csv(novelSJ, file = "unique_SJs.csv")
