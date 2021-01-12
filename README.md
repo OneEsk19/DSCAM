@@ -9,7 +9,11 @@ FOLDER: SJ_Files
 Splice.Rmd
  - Markdown file of splice analysis pipeline.
  - Download to edit
-
+ - Resulting files:
+     - dscam_sjs.csv
+     - known_SJs.csv
+     - unique_SJs.csv 
+ 
 Splice.html
  - Publication of above md
 
