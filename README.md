@@ -1,7 +1,7 @@
 # Alternative splicing in Insect DSCAM gene
 ## D. melanogaster
 
-Contents:
+### Contents:
 
 FOLDER: SJ_Files
  - Data files for Splice.rmd pipeline
