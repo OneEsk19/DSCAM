@@ -1,0 +1,115 @@
+---
+title: "DSCAM graphs"
+author: "G.Robertson"
+date: "12/01/2021"
+output: 
+  rmarkdown::html_document:
+    theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Splicing In DSCAM
+### Results
+
+
+```{r warning=FALSE}
+# Required libraries
+library(ggplot2)
+library(ggforce)
+library(gridExtra)
+```
+
+
+```{r}
+# Load in the data from previous analysis.
+dscamSJs <- read.csv(file="dscam_sjs.csv")
+```
+ 
+
+```{r}
+# Create a useful subset and rename columns to be easier to work with.
+graf <- dscamSJs[,c(3,4,8,11,12)]
+id <- 1:63
+graf <- cbind(graf, id)
+colnames(graf) <- c("start", "end", "reads","Experiment", "Novel", "ID")
+```
+
+
+```{r}
+# Read depth graph
+ggplot(graf, aes(x=ID, y=log(reads))) +
+  geom_point(aes(colour = Experiment, shape = Novel), size = 3)+
+    scale_shape_manual(values = c(16, 17)) +
+  ggtitle("Read Depth of All Splice Junctions")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+```{r}
+# Read depth graph with zoom on novel junctions
+ggplot(graf, aes(x=ID, y=log(reads))) +
+  geom_point(aes(colour = Experiment, shape = Novel), size = 3) +
+    scale_shape_manual(values = c(16, 17)) +
+  ggtitle("Read Depth of All Splice Junctions") +
+  facet_zoom(x = id <16) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Or:
+```{r}
+indb <- graf[c(16:63), ]
+nov <- graf[c(1:15), ]
+g1 <- ggplot(indb, aes(x=ID, y=log(reads))) +
+  geom_point(aes(colour = Experiment), size = 3)+
+  ggtitle("Read Depth of Known Splice Junctions(log scale)")+
+  theme(plot.title = element_text(hjust = 0.5))
+g2 <- ggplot(nov, aes(x=ID, y=reads)) +
+  geom_point(aes(colour = Experiment), size = 3)+
+  ggtitle("Read Depth of Novel Splice Junctions")+
+  theme(plot.title = element_text(hjust = 0.5))
+grid.arrange(g1, g2, ncol=1)
+```
+
+With lines instead:
+```{r}
+g1 <- ggplot(indb, aes(x=ID, y=log(reads))) +
+  geom_line(aes(colour = Experiment))+
+  ggtitle("Read Depth of Known Splice Junctions(log scale)")+
+  theme(plot.title = element_text(hjust = 0.5))
+g2 <- ggplot(nov, aes(x=ID, y=reads)) +
+  geom_line(aes(colour = Experiment))+
+  ggtitle("Read Depth of Novel Splice Junctions")+
+  theme(plot.title = element_text(hjust = 0.5))
+grid.arrange(g1, g2, ncol=1)
+```
+
+
+
+
+```{r}
+# Some data wrangling for the graph
+int_mot <- dscamSJs[,c(6,12)]
+colnames(int_mot) <- c("Motif", "Novel")
+# Key: Intron Motif (0:  non-canonical;  1:  GT/AG,  2:  CT/AC,  3:  GC/AG,  4:  CT/GC,  5:AT/AC, 6:  GT/AT)
+int_mot$Motif[int_mot$Motif == 2] <- "GT/AG"
+int_mot$Motif[int_mot$Motif == 4] <- "CT/GC"
+int_mot$Motif[int_mot$Motif == 6] <- "GT/AT"
+```
+
+
+```{r}
+# Intron motif count
+ggplot(int_mot, aes(x=Motif, color=Novel, fill=Novel)) + 
+  geom_bar(position="dodge") +
+  ggtitle("Occurence of Intron Motif") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### Here you can see that only novel splice junctions from our data have intron motifs that are not GT/AG
+______________________________________________________________________
+
+Preceeding pipeline:
+[Finding novel splice junctions in RNA-seq data from D. melanogaster DSCAM gene](https://rpubs.com/OneEsk19/708168?fbclid=IwAR0jIqC52kWxcPl-73MU4iy5PsZiJXAAYDnmt-RZeyrxRbhDuzgndl9d2VI)
