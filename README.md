@@ -1,5 +1,5 @@
-# Alternative splicing in Insect DSCAM gene
-## D. melanogaster
+# Alternative splicing in insect <i>DSCAM</i> gene
+## <i>D. melanogaster</i>
 
 ### Contents:
 
