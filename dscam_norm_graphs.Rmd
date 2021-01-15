@@ -1,5 +1,5 @@
 ---
-title: "dscam_norm_graphs"
+title: "DSCAM graphs 2 (normalised)"
 output: 
   rmarkdown::html_document:
     theme: united
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Splicing In DSCAM
 ### Results - NORMALISED INSTEAD OF LOG
 = read/sum(reads)
-Dataset can be seen [here](https://github.com/OneEsk19/DSCAM/blob/main/norm_reads.csv)
+Dataset can be seen [here] <https://github.com/OneEsk19/DSCAM/blob/main/norm_reads.csv>
 
 
 ```{r warning=FALSE}
@@ -44,7 +44,7 @@ graf2 <- cbind(graf, norm_reads)
 write.csv(graf2, file = "norm_reads.csv")
 ```
 
-Dataset can be seen [here] <https://github.com/OneEsk19/DSCAM/blob/main/norm_reads.csv>
+
 
 ```{r}
 ggplot(graf2, aes(x=ID, y=norm_reads)) +
