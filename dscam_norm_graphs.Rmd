@@ -1,0 +1,93 @@
+---
+title: "dscam_norm_graphs"
+output: 
+  rmarkdown::html_document:
+    theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Splicing In DSCAM
+### Results - NORMALISED INSTEAD OF LOG
+= read/sum(reads)
+Dataset can be seen [here](https://github.com/OneEsk19/DSCAM/blob/main/norm_reads.csv)
+
+
+```{r warning=FALSE}
+# Required libraries
+library(ggplot2)
+library(gridExtra)
+```
+
+
+```{r}
+# Load in the data from previous analysis.
+dscamSJs <- read.csv(file="dscam_sjs.csv")
+```
+ 
+
+```{r}
+# Create a useful subset and rename columns to be easier to work with.
+graf <- dscamSJs[,c(3,4,8,11,12)]
+id <- 1:63
+graf <- cbind(graf, id)
+colnames(graf) <- c("start", "end", "reads","Experiment", "Novel", "ID")
+sumofreads <- sum(graf$reads)
+norm_reads <- graf$reads/sumofreads
+graf2 <- cbind(graf, norm_reads)
+```
+
+
+```{r}
+write.csv(graf2, file = "norm_reads.csv")
+```
+
+Dataset can be seen [here] <https://github.com/OneEsk19/DSCAM/blob/main/norm_reads.csv>
+
+```{r}
+ggplot(graf2, aes(x=ID, y=norm_reads)) +
+  geom_point(aes(colour = Experiment, shape = Novel), size = 3)+
+    scale_shape_manual(values = c(16, 17)) +
+  ggtitle("Read Depth of All Splice Junctions")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+write.csv(graf2, file="norms.csv")
+```
+
+
+```{r}
+indb <- graf2[c(16:63), ]
+nov <- graf2[c(1:15), ]
+
+g1 <- ggplot(indb, aes(x=ID, y=norm_reads)) +
+  geom_point(aes(colour = Experiment), size = 3)+
+  ggtitle("Read Depth of Known Splice Junctions(log scale)")+
+  theme(plot.title = element_text(hjust = 0.5))
+g2 <- ggplot(nov, aes(x=ID, y=norm_reads)) +
+  geom_point(aes(colour = Experiment), size = 3)+
+  ggtitle("Read Depth of Novel Splice Junctions")+
+  theme(plot.title = element_text(hjust = 0.5))
+grid.arrange(g1, g2, ncol=1)
+```
+
+With lines instead:
+```{r}
+g1 <- ggplot(indb, aes(x=ID, y=norm_reads)) +
+  geom_line(aes(colour = Experiment))+
+  ggtitle("Read Depth of Known Splice Junctions(log scale)")+
+  theme(plot.title = element_text(hjust = 0.5))
+g2 <- ggplot(nov, aes(x=ID, y=norm_reads)) +
+  geom_line(aes(colour = Experiment))+
+  ggtitle("Read Depth of Novel Splice Junctions")+
+  theme(plot.title = element_text(hjust = 0.5))
+grid.arrange(g1, g2, ncol=1)
+```
+
+
+Preceeding pipeline:
+[Finding novel splice junctions in RNA-seq data from D. melanogaster DSCAM gene](https://rpubs.com/OneEsk19/708168?fbclid=IwAR0jIqC52kWxcPl-73MU4iy5PsZiJXAAYDnmt-RZeyrxRbhDuzgndl9d2VI)
+
+[Log scale graphs](https://rpubs.com/OneEsk19/712837)
