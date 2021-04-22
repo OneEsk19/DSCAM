@@ -1,4 +1,4 @@
-### plot_dscam_v3.py  
+### plot_dscam_v5.py  
 
 This script was authored by W. Xu and adapted from a script originally written by R. Arnold.  
 
@@ -18,7 +18,7 @@ To draw support levels for each exon.
 
 Output:  
 .svg - A vector graphic
-
+Example utput file provided
 
 
 ### batch_resize_svg
