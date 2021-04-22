@@ -1,0 +1,4 @@
+for old in *; do
+    new="$(echo "$old" | sed -e 's/svg$/new.svg/')"
+    rsvg-convert "$old" -w 300 -h 308 -f svg -o "$new"
+done
