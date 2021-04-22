@@ -15,3 +15,14 @@ To draw support levels for each exon.
   - green is canonical donor site.  
   - yellow is canonical acceptor site.  
   - blue represents position of exon as defined in the annotation file.  
+
+Output:  
+.svg - A vector graphic
+
+
+
+### batch_resize_svg
+
+This is a bash script for resizing all .svg files in a folder.
+  - Execute this script from the folder which contains all the svgs you want to resize
+  - Change the -w and -h accordingly  
