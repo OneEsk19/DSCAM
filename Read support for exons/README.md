@@ -17,8 +17,8 @@ To draw support levels for each exon.
   - blue represents position of exon as defined in the annotation file.  
 
 Output:  
-.svg - A vector graphic
-Example utput file provided
+.svg - A vector graphic  
+Example output file provided
 
 
 ### batch_resize_svg
