@@ -1,4 +1,4 @@
-### plot_dscam_v5.py  
+### plot_dscam_v7.py  
 
 This script was authored by W. Xu and adapted from a script originally written by R. Arnold.  
 
