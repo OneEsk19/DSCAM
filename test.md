@@ -1,0 +1,104 @@
+title: "Splice Junctions"
+author: "Georgina Robertson"
+date: "28/12/2020"
+output: 
+  rmarkdown::html_document:
+    theme: united
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Finding novel splice junctions in RNA-seq data from <i> D. melanogaster DSCAM </i> gene.
+
+Required library.
+```{r}
+library(data.table)
+```
+
+Create objects from all of the relevant files.
+```{r}
+ # splice junction file from database
+fromDB <- read.table("SJ_files/sjdbList.fromGTF.out.tab")
+# splice junction files output from STAR aligner
+out1 <- setDT(read.table("SJ_files/3962_1_SJ.out.tab"))
+out2 <- setDT(read.table("SJ_files/3962_1a_SJ.out.tab"))
+out3 <- setDT(read.table("SJ_files/4024_1_SJ.out.tab"))
+out4 <- setDT(read.table("SJ_files/4049_1_SJ.out.tab"))
+```
+
+
+Add experiment id as a variable, and merge everything into one table.
+```{r include=TRUE, results="hide"}
+a <- cbind(out1, replicate(length(out1$V1), print("3962_1")))
+b <- cbind(out2, replicate(length(out2$V1), print("3962_2")))
+c <- cbind(out3, replicate(length(out3$V1), print("4024_1")))
+d <- cbind(out4, replicate(length(out4$V1), print("4049_1")))
+allout <- rbind(a,b,c,d)
+# add column names
+colnames(allout) <- c("chromosome", "start", "end", "strand", "intron motif", "annotation", "uniquely mapping reads", "multi-mapping reads", "max spliced alignment", "experiment")
+```
+
+Visual inspection of our output files show we only have SJs from chromosome 2R, so subset only 2R SJs from ref file to speed up computation.
+```{r}
+chr2Rdb <- setDT(fromDB[fromDB$V1=="2R",])
+```
+
+
+Set up keys to enable comparisons between tables.
+```{r}
+# Setting the key in the reference
+setkey(chr2Rdb, V2, V3)
+# Setting the key in our splice table
+setkey(allout, start, end)
+# selecting observations from our results that do not appear in the reference
+novelSJ <- allout[!chr2Rdb]
+# determine which SJs from our data were previously known
+setkey(novelSJ, start, end)
+knownSJ <- allout[!novelSJ]
+```
+
+
+Output results to file.
+```{r}
+write.csv(novelSJ, file = "unique_SJs.csv")
+write.csv(knownSJ, file = "known_SJs.csv")
+```
+
+### Description of variables
+
+1) Chromosome
+2) First base of intron (1-based)
+3) Last base of intron (1-based)
+4) Which strand the sequence was aligned to (0:  undefined, 1:  +, 2:  -)
+5) Intron Motif (0:  non-canonical;  1:  GT/AG,  2:  CT/AC,  3:  GC/AG,  4:  CT/GC,  5:AT/AC, 6:  GT/AT)
+6) Annotated (0: No, 1: Yes)
+7) Number of uniquely mapped reads crossing the junction
+8) Number of multi-mapped reads crossing the junction
+9) Maximum spliced alignment overhang.
+  *The overhang in this case is the alignment overhang, i.e. if a read   is spliced as: ACGTACGT----------ACGT, the overhang is 4. Then for    all the reads crossing this junction the maximum overhang is reported.
+10) Experiment ID
+
+Assign a variable to indicate whether the SJ is novel or not and combine all the results.
+```{r}
+e <- cbind(novelSJ, rep("TRUE", 15))
+f <- cbind(knownSJ, rep("FALSE", 48))
+allSJs <- rbind(e,f)
+colnames(allSJs)[11] <- "Novel SJ"
+```
+Write the complete results to file. 
+```{r}
+write.csv(allSJs, file="dscam_sjs.csv")
+```
+
+```{r}
+# clean up objects
+# rm(a, b, c, d, e, f, res1, res2, res3, res4)
+```
+
+______________________________________________________________
+
+### Results
+[Graphs of some of the results can be found here](https://rpubs.com/OneEsk19/712837)
